@@ -14,6 +14,41 @@
                 </div>
             </div>
         </header>
-      <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+           <br/>
+           <div class="container">
+           {% if cart_products %}
+               {% for product in cart_products %}
+           	<div class="card mb-3" >
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{ product.image.url }}" class="img-fluid rounded-start" alt="...">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+          <center>
+        <h5 class="card-title">{{ product.name }}</h5>
+        <p class="card-text">{{ product.description }}</p>
+        <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+              {% if product.on_sale %}
+                                   <strike>${{ product.price }}</strike>
+                                      ${{ product.sale_price }}
+              	{% else %}
+                                ${{ product.price }}
+              {% endif %}
+<br/><br/>
+              <a href="{% url 'home' %} " class="btn btn-secondary">Home</a>
+          <button type="button" value="{{ product.id }}" id="add-cart" class="btn btn-secondary">Add to Cart</button>
+              </center>
+      </div>
+    </div>
+  </div>
+</div><br/>
+           {% endfor %}
+           {% else %}
+               there is nothing in your shopping cart...
+               <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+           {% endif %}
+           </div>
+
 
 {% endblock %}
