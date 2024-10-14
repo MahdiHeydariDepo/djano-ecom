@@ -23,6 +23,10 @@ def category(request, foo):
             return redirect('home')
 
 
+def category_summary(request):
+    categories = Category.objects.all()
+    return render(request, 'category_summary.html',
+                  {'categories': categories})
 
 def product(request, pk):
     product = Product.objects.get(id=pk)
