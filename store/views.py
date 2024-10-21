@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from .forms import SignUpForm
+from .forms import SignUpForm, UpdateUserForm
 from django.template.defaultfilters import slugify
 
 
@@ -17,16 +17,17 @@ def category(request, foo):
         category = Category.objects.get(name=foo)
         products = Product.objects.filter(category=category)
         return render(request, 'category.html',
-                      {'category': category, 'products': products, 'categories': categories} )
+                      {'category': category, 'products': products, 'categories': categories})
     except:
-            messages.success(request, 'THIS CATEGORY IS NOT AVAILABLE')
-            return redirect('home')
+        messages.success(request, 'THIS CATEGORY IS NOT AVAILABLE')
+        return redirect('home')
 
 
 def category_summary(request):
     categories = Category.objects.all()
     return render(request, 'category_summary.html',
                   {'categories': categories})
+
 
 def product(request, pk):
     product = Product.objects.get(id=pk)
@@ -37,7 +38,7 @@ def home(request):
     categories = Category.objects.all()
     products = Product.objects.all()
     return render(request, 'home.html', {'products': products
-                                         , 'categories': categories})
+        , 'categories': categories})
 
 
 def about(request):
@@ -84,3 +85,21 @@ def register_user(request):
             return redirect('register')
     else:
         return render(request, 'register.html', {'form': form})
+
+
+def update_user(request):
+    if request.user.is_authenticated:
+        current_user = User.objects.get(id=request.user.id)
+        user_form = UpdateUserForm(request.POST or None, instance=current_user)
+        if user_form.is_valid():
+            user_form.save()
+
+            login(request, current_user)
+            messages.success(request, "The User Has Been Updated!!")
+            return redirect('home')
+        return render(request, 'update_user.html', {'user_form': user_form})
+
+    else:
+        messages.success(request, "you have to log in first")
+        return redirect('home')
+
